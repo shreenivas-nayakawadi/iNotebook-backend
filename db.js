@@ -1,6 +1,9 @@
+// importing tthe mongoose to the app for the connection with the mongodb database
 const mongoose = require('mongoose');
-const mongoURI = 'mongodb://localhost:27017/';
+// conncetion link of our mongodb database
+const mongoURI = 'mongodb://localhost:27017/inotebook';
 
+// function to connect the database 
 const connectToMongo = async () => {
   try {
     await mongoose.connect(mongoURI);
@@ -10,4 +13,5 @@ const connectToMongo = async () => {
   }
 };
 
+// exporting the module
 module.exports = connectToMongo;

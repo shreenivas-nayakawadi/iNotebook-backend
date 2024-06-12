@@ -1,5 +1,9 @@
+// importing the the mongoose library to create the schema
 const mongoose = require("mongoose");
+// importing the schema{schema is basically a structure of database}
+const { Schema } = mongoose;
 
+// creating the schema
 const UserSchema = new Schema({
   name: {
     type: String,
@@ -8,15 +12,18 @@ const UserSchema = new Schema({
   email: {
     type: String,
     required: true,
-    unique: true,
+    unique:true,
   },
   password: {
-    typr: String,
+    type: String,
     required: true,
   },
   date: {
-    type: date,
+    type: Date,
     default: Date.now,
   },
 });
-module.exports = mongoose.model('user', UserSchema)
+
+// exporting the schema by making it model {model: a wrapper of the Mongoose schema}
+const User = mongoose.model("User", UserSchema);
+module.exports = User;
