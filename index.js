@@ -2,11 +2,15 @@
 const connectToMongo = require("./db");
 // importing the express framework for the app
 const express = require("express");
+var cors =require('cors')
 
 // calling function to connect with database, and creating express variable and assigning port to the app
 connectToMongo();
 const app = express();
 const port = 5000;
+
+
+app.use(cors())
 
 // a built-in middleware function in Express that parses incoming requests with JSON payloads.
 app.use(express.json());

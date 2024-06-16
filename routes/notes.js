@@ -23,7 +23,8 @@ router.post(
     // accepting the name email and password from the user
     body("title", "enter a valid ttile").isLength({ min: 3 }),
     body("description", "description must be atleast five characters").isLength(
-      { min: 5 }
+      { min: 5 },
+      body("tag", "enter a valid tag").isLength({ min: 3 }),
     ),
   ],
   async (req, res) => {
@@ -98,7 +99,7 @@ router.delete("/deleteNote/:id", fetchuser, async (req, res) => {
       return res.status(401).send("deletion not allowed");
     }
     note = await Note.findByIdAndDelete(req.params.id);
-    res.json({ success: "success not has been deleted", note: note });
+    res.json({ success: "success note has been deleted", note: note });
   } catch (error) {
     console.error(error.message);
     res.status(500).send("internal server error occured");
