@@ -26,5 +26,5 @@ app.get("/", (req, res) => {
 
 // method to make server to response to the particular port
 app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`);
+  console.log(`iNotebook Backend listening on port ${port}`);
 });
