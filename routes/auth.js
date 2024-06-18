@@ -82,6 +82,7 @@ router.post(
     body("password", "password must be atleast 5 characters").exists(),
   ],
   async (req, res) => {
+    let success = false;
     // if there are errors, return bad request and the errors
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -96,9 +97,13 @@ router.post(
 
       // if you cannot find the user return the error status
       if (!user) {
+        success = false;
         return res
           .status(400)
-          .json({ error: "please try to login with correct credentials" });
+          .json({
+            success,
+            error: "please try to login with correct credentials",
+          });
       }
 
       // after finding the user compare entered password with the database password
@@ -106,9 +111,11 @@ router.post(
 
       // if password is wrong send error
       if (!passwordCompare) {
-        return res
-          .status(400)
-          .json({ error: "please try to login with correct credentials" });
+        success = false;
+        return res.status(400).json({
+          success,
+          error: "please try to login with correct credentials",
+        });
       }
 
       // get the user id from the database
@@ -122,7 +129,8 @@ router.post(
       const authtoken = jwt.sign(data, JWT_SECERT);
 
       // return the authtoken as response to user
-      res.json({ authtoken });
+      success = true;
+      res.json({ success, authtoken });
     } catch (error) {
       // if any kind of error occured inside the server send the error response and print the error inside the console
       console.error(error.message);
@@ -134,7 +142,7 @@ router.post(
 // ROUTE 3: get logged in user details  using : post"/api/auth/getuser : login required
 router.post("/getuser", fetchuser, async (req, res) => {
   try {
-     userId = req.user.id;
+    userId = req.user.id;
     const user = await User.findById(userId).select("-password");
     res.send(user);
   } catch (error) {
