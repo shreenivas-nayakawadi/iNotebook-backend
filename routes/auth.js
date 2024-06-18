@@ -28,10 +28,11 @@ router.post(
     }),
   ],
   async (req, res) => {
+    let success = false;
     // if there are errors, return bad request and the errors
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
+      return res.status(400).json({ success, errors: errors.array() });
     }
 
     //try creating the user
@@ -39,9 +40,10 @@ router.post(
       // check whether user with email exists already
       let user = await User.findOne({ email: req.body.email });
       if (user) {
-        return res
-          .status(400)
-          .json({ error: "sorry a user with this email already exists" });
+        return res.status(400).json({
+          success,
+          error: "sorry a user with this email already exists",
+        });
       }
 
       // create salt {salt is basically a hash we add at the end of our password for more security}
@@ -63,12 +65,13 @@ router.post(
 
       // creating the jwt token for authenticataion
       const authtoken = jwt.sign(data, JWT_SECERT);
+      success = true;
       // sending authtoken as response
-      res.json({ authtoken });
+      res.json({ success, authtoken });
       // using authtoken we can retrieve the userid and check is anyone tampered the data
     } catch (error) {
       // if you find any error send the error to console and send response status 500{The status code 500 indicates an internal server error, meaning something went wrong on the server side.}
-      console.error(error.message);
+      console.error(success, error.message);
       res.status(500).send("some error occured");
     }
   }
@@ -98,12 +101,10 @@ router.post(
       // if you cannot find the user return the error status
       if (!user) {
         success = false;
-        return res
-          .status(400)
-          .json({
-            success,
-            error: "please try to login with correct credentials",
-          });
+        return res.status(400).json({
+          success,
+          error: "please try to login with correct credentials",
+        });
       }
 
       // after finding the user compare entered password with the database password
